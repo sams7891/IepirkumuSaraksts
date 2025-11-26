@@ -72,6 +72,13 @@ public class Uzd1 {
 					JOptionPane.showMessageDialog(null, str, "Produktu saraksts", JOptionPane.INFORMATION_MESSAGE);
 				}
 				break;
+				
+			case "4":
+				do {
+					koAtrast = JOptionPane.showInputDialog(null, "Kādu produktu meklēt sarakstā?", "Jautājums", JOptionPane.INFORMATION_MESSAGE);
+				}while(!koAtrast.matches("^[\\p{L} ]+$"));
+				
+				
 			}
 			
 		}while(!izvele.equals("0"));
