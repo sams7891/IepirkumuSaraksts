@@ -227,6 +227,7 @@ public class Biblioteka {
 						JOptionPane.showMessageDialog(null, "Meklētā grāmata nemaz plauktā neotrodas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
 					else {
 						plaukts.get(indekss).panemtGramatu();
+						panemtasGramatas.add(plaukts.get(indekss));
 					}
 						
 				}
@@ -234,7 +235,19 @@ public class Biblioteka {
 				break;
 				
 			case "Atdot grāmatas":
+				if(panemtasGramatas.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Nav nevienas paņemtas grāmatas");
+					break;
+				}
 				
+				String[] gramatuNosaukumi = new String[panemtasGramatas.size()];
+				
+				for(int i = 0; i < panemtasGramatas.size(); i++ ){
+					gramatuNosaukumi[i] = panemtasGramatas.get(i).getNosaukums();
+				}
+				
+				JOptionPane.showInputDialog(null, "Kuru grāmatu vēlies atgriezt", "Izvēlne", JOptionPane.INFORMATION_MESSAGE, null, gramatuNosaukumi, gramatuNosaukumi[0]);
+					
 				break;
 			}
 			
