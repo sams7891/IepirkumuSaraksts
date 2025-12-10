@@ -139,6 +139,10 @@ public class Uzd1 {
 				break;
 				
 			case "7":
+				if(saraksts.size() == 0) {
+					kludasZina("Saraksts ir tukšs");
+					break;
+				}
 				do {
 					try {
 						kurNonemt = Integer.parseInt(JOptionPane.showInputDialog("Kuras pozīcijas elementu noņemt?"));
