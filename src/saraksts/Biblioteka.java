@@ -6,7 +6,34 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 public class Biblioteka {
+	
+	
+	/*
+	 * Meklēšanas metode
+	 */
+	
+	static int meklet(LinkedList<Gramata> saraksts, String nosaukums) {
 
+		for(int i = 0; i < saraksts.size(); i++) {
+			if(saraksts.get(i).getNosaukums().equalsIgnoreCase(nosaukums))
+				return i;
+		}
+		
+		return -1;
+	}
+	
+	static boolean mekletBoolean(LinkedList<Gramata> saraksts, String nosaukums) {
+
+		for(int i = 0; i < saraksts.size(); i++) {
+			if(saraksts.get(i).getNosaukums().equalsIgnoreCase(nosaukums)) {
+				JOptionPane.showMessageDialog(null, "Tāda grāmata jau eksistē");
+				return true;	
+			}
+		}
+		
+		return false;
+	}
+	
 	/*
 	 * Ievažu pārbaude
 	 */
@@ -73,7 +100,7 @@ public class Biblioteka {
 		
 
 			
-		}while(!Pattern.matches("^[\\p{L} ]+$", ievade));
+		}while(!Pattern.matches("^[\\p{L} .]+$", ievade));
 		
 		return ievade;
 	}
@@ -87,7 +114,8 @@ public class Biblioteka {
 		int id = 1, skaits, lppSk, indekss;
 		double cena;
 		LinkedList<Gramata> plaukts = new LinkedList<>();
-		String[] darbibas = {"Pievienot grāmatu", "Noņemt grāmatu", "Apskatīt grāmatu", "Iznomāt grāmatu", "Apturēt"};
+		LinkedList<Gramata> panemtasGramatas = new LinkedList<>();
+		String[] darbibas = {"Pievienot grāmatu", "Noņemt grāmatu", "Apskatīt grāmatu", "Iznomāt grāmatu", "Atdot grāmatas", "Apturēt"};
 		
 		do {
 			izvelne = (String) JOptionPane.showInputDialog(null, "Izvēlies darbību", "Darbību saraksts", JOptionPane.INFORMATION_MESSAGE, null, darbibas, darbibas[0]);
@@ -98,10 +126,19 @@ public class Biblioteka {
 			
 			switch(izvelne) {
 			case "Pievienot grāmatu":
-				nosaukums = virknesParbaude("Ieraksti grāmatas nosaukumu", "Intara manifesto");
+				boolean gramataEksiste = false;
+				do {
+					gramataEksiste = false;
+					nosaukums = virknesParbaude("Ieraksti grāmatas nosaukumu", "Intara manifesto");
+					
+					if(nosaukums == null)
+						break;
+					
+					gramataEksiste = mekletBoolean(plaukts, nosaukums);
+					
+				}while(gramataEksiste);
 				
-				if(nosaukums == null)
-					break;
+				
 				
 				autors = virknesParbaude("Ieraksti autora vārdu", "Intars Lācis");
 				
@@ -133,7 +170,72 @@ public class Biblioteka {
 				break;
 
 			case "Noņemt grāmatu":
+				if(plaukts.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Nav plauktā nevienas grāmatas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+				} else {
+					nosaukums = virknesParbaude("Kā sauc grāmatu, kuru vēlies noņemt", "Intara manifesto");
+					
+					if(nosaukums == null)
+						break;
+					
+					indekss = meklet(plaukts, nosaukums);
+					
+					if(indekss == -1)
+						JOptionPane.showMessageDialog(null, "Meklētā grāmata nemaz plauktā neotrodas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+					else {
+						plaukts.remove(indekss);
+						
+						JOptionPane.showMessageDialog(null, "Grāmata dzēsta", "Paziņojums", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 				
+				break;
+				
+			case "Apskatīt grāmatu":
+				if(plaukts.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Nav plauktā nevienas grāmatas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+					break;
+				}
+				
+				nosaukums = virknesParbaude("Kuru grāmatu aplūkosiet", "Intara manifesto");
+				
+				if(nosaukums == null)
+					break;
+				
+				indekss = meklet(plaukts, nosaukums);
+				
+				if(indekss == -1)
+					JOptionPane.showMessageDialog(null, "Meklētā grāmata nemaz plauktā neotrodas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+				else
+					plaukts.get(indekss).info();
+				
+				break;
+				
+			case "Iznomāt grāmatu":
+				
+				if(plaukts.isEmpty())
+					JOptionPane.showMessageDialog(null, "Nav plauktā nevienas grāmatas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+				else {
+					nosaukums = virknesParbaude("Kādu grāmatu meklējat", "Intara manifesto");
+					
+					if(nosaukums == null)
+						break;
+					
+					indekss = meklet(plaukts, nosaukums);
+					
+					if(indekss == -1)
+						JOptionPane.showMessageDialog(null, "Meklētā grāmata nemaz plauktā neotrodas!", "Brīdinājums", JOptionPane.WARNING_MESSAGE);
+					else {
+						plaukts.get(indekss).panemtGramatu();
+					}
+						
+				}
+				
+				break;
+				
+			case "Atdot grāmatas":
+				
+				break;
 			}
 			
 		}while(!izvelne.equals(darbibas[darbibas.length - 1]));
